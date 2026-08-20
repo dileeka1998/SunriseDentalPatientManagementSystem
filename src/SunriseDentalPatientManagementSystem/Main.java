@@ -5,27 +5,18 @@
  */
 package SunriseDentalPatientManagementSystem;
 
-import db.DBConnection;
-import java.sql.Connection;
-import java.sql.SQLException;
 import view.LoginView;
 
 /**
  *
  * @author hnd
  */
-public class TestAutomation {
+public class Main {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        try {
-            LoginView login = new LoginView();
-            login.setVisible(true);
-        } catch (Exception e) {
-            System.err.println("Failed to open the application window. Please restart the application.");
-            e.printStackTrace();
-        }
+        LoginView.main(args);
     }
 }
