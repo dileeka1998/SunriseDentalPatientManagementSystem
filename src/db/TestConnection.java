@@ -19,7 +19,7 @@ public class TestConnection {
         try (Connection conn = DBConnection.getConnection()) {
 
             if (conn != null) {
-                System.out.println("Connected to login_db successfully!");
+                System.out.println("Connected to sunrise_db successfully!");
             }
 
         } catch (SQLException e) {
