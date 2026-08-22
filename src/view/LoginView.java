@@ -20,6 +20,17 @@ public class LoginView extends javax.swing.JFrame {
      */
     public LoginView() {
         initComponents();
+        setTitle("Sunrise Dental - Login");
+        setIconImage(new javax.swing.ImageIcon(
+                getClass().getResource("/assets/medical-cross.png")).getImage());
+        getContentPane().setBackground(java.awt.Color.WHITE);
+        lblTitle.setForeground(new java.awt.Color(36, 115, 66));
+        jButton1.setBackground(new java.awt.Color(36, 115, 66));
+        jButton1.setForeground(java.awt.Color.WHITE);
+        lblMessage.setForeground(new java.awt.Color(160, 45, 45));
+        getRootPane().setDefaultButton(jButton1);
+        setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     /**
@@ -37,6 +48,9 @@ public class LoginView extends javax.swing.JFrame {
         txtUsername = new javax.swing.JTextField();
         txtPassword = new javax.swing.JPasswordField();
         lblMessage = new javax.swing.JLabel();
+        lblRole = new javax.swing.JLabel();
+        cmbRole = new javax.swing.JComboBox<String>();
+        lblTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,7 +65,12 @@ public class LoginView extends javax.swing.JFrame {
 
         jLabel2.setText("Password");
 
-        lblMessage.setText("jLabel3");
+        lblMessage.setText(" ");
+        lblRole.setText("Role");
+        cmbRole.setModel(new javax.swing.DefaultComboBoxModel<String>(
+                new String[] { "Select role", "Staff", "Dentist" }));
+        lblTitle.setText("Sunrise Dental");
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -63,66 +82,72 @@ public class LoginView extends javax.swing.JFrame {
                         .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(88, 88, 88)
+                            .addComponent(jLabel2)
+                            .addComponent(lblRole))
+                        .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                            .addComponent(txtPassword)))
+                            .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                            .addComponent(txtPassword)
+                            .addComponent(cmbRole, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(119, 119, 119)
+                        .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTitle)
                             .addComponent(lblMessage)
                             .addComponent(jButton1))))
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(68, 68, 68)
+                .addGap(30, 30, 30)
+                .addComponent(lblTitle)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRole)
+                    .addComponent(cmbRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24)
                 .addComponent(jButton1)
-                .addGap(35, 35, 35)
+                .addGap(16, 16, 16)
                 .addComponent(lblMessage)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         String username = txtUsername.getText();
+        String password = new String(txtPassword.getPassword());
+        String role = (String) cmbRole.getSelectedItem();
+        LoginController controller = new LoginController();
+        String result = controller.validateInput(username, password, role);
 
-    String password =
-            new String(txtPassword.getPassword());
+        if (!result.equals("VALID")) {
+            lblMessage.setText(result);
+            return;
+        }
 
-    LoginController controller =
-            new LoginController();
+        result = controller.login(username, password);
+        txtPassword.setText("");
 
-    String result =
-            controller.login(username, password);
-
-    if (result.equals("LOGIN_SUCCESS")) {
-
-      lblMessage.setText("Login successful!");
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Welcome " + username
-        );
-
-    } else {
-
-       lblMessage.setText(result);
-
-    }
+        if (result.equals("LOGIN_SUCCESS")) {
+            lblMessage.setText("Login successful!");
+            JOptionPane.showMessageDialog(this,
+                    "Welcome " + username + "\nRole verification is not connected yet.");
+            new MainView(username).setVisible(true);
+            dispose();
+        } else {
+            lblMessage.setText("Unable to log in. Check your details or connection.");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -167,5 +192,8 @@ public class LoginView extends javax.swing.JFrame {
     private javax.swing.JLabel lblMessage;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
+    private javax.swing.JLabel lblRole;
+    private javax.swing.JComboBox<String> cmbRole;
+    private javax.swing.JLabel lblTitle;
     // End of variables declaration//GEN-END:variables
 }

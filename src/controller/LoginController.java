@@ -42,6 +42,21 @@ public class LoginController {
         return "VALID";
     }
 
+    public String validateInput(String username, String password, String role) {
+
+        String result = validateInput(username, password);
+
+        if (!result.equals("VALID")) {
+            return result;
+        }
+
+        if (!"Staff".equals(role) && !"Dentist".equals(role)) {
+            return "Please select a role";
+        }
+
+        return "VALID";
+    }
+
     // Login method
     public String login(String username, String password) {
 
