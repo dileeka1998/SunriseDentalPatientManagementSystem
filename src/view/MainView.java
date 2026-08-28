@@ -1,5 +1,6 @@
 package view;
 
+import Model.User;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -19,11 +20,17 @@ public class MainView extends JFrame {
     private JButton btnLogout;
     private JButton btnExit;
 
-    public MainView(String username) {
-        initComponents(username);
+    public MainView(User user) {
+        if (user == null || (!"STAFF".equals(user.getUserType())
+                && !"DENTIST".equals(user.getUserType()))) {
+            throw new IllegalArgumentException("An authorized user is required");
+        }
+        initComponents(user);
     }
 
-    private void initComponents(String username) {
+    private void initComponents(User user) {
+        final boolean isStaff = "STAFF".equals(user.getUserType());
+        String role = isStaff ? "Staff" : "Dentist";
         setTitle("Sunrise Dental - Patient Management System");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(900, 600);
@@ -37,14 +44,17 @@ public class MainView extends JFrame {
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitle.setForeground(new Color(36, 115, 66));
         pnlHeader.add(lblTitle, BorderLayout.WEST);
-        pnlHeader.add(new JLabel("Signed in: " + username), BorderLayout.EAST);
+        pnlHeader.add(new JLabel("Signed in: " + user.getUsername() + " (" + role + ")"),
+                BorderLayout.EAST);
 
         JPanel pnlNavigation = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         pnlNavigation.setBackground(Color.WHITE);
-        btnToday = new JButton("Today");
+        btnToday = new JButton(isStaff ? "Today" : "My appointments");
         btnPatients = new JButton("Patients");
         pnlNavigation.add(btnToday);
-        pnlNavigation.add(btnPatients);
+        if (isStaff) {
+            pnlNavigation.add(btnPatients);
+        }
         pnlHeader.add(pnlNavigation, BorderLayout.SOUTH);
         add(pnlHeader, BorderLayout.NORTH);
 
@@ -53,7 +63,7 @@ public class MainView extends JFrame {
         JPanel pnlToday = new JPanel(new BorderLayout(10, 20));
         pnlToday.setBackground(new Color(244, 248, 244));
         pnlToday.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
-        JLabel lblToday = new JLabel("Today's appointments");
+        JLabel lblToday = new JLabel(isStaff ? "Today's appointments" : "My appointments");
         lblToday.setFont(new Font("Segoe UI", Font.BOLD, 18));
         pnlToday.add(lblToday, BorderLayout.NORTH);
         JTable tblAppointments = new JTable(new DefaultTableModel(
@@ -69,12 +79,14 @@ public class MainView extends JFrame {
         pnlToday.add(scrollAppointments, BorderLayout.CENTER);
         pnlToday.add(new JLabel("Appointments are not connected yet."), BorderLayout.SOUTH);
         pnlPages.add(pnlToday, "today");
-        pnlPages.add(new PatientManagementView(this), "patients");
+        if (isStaff) {
+            pnlPages.add(new PatientManagementView(this), "patients");
+        }
         add(pnlPages, BorderLayout.CENTER);
 
         JPanel pnlFooter = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pnlFooter.setBackground(Color.WHITE);
-        pnlFooter.add(new JLabel("Role verification pending - no patient data loaded"));
+        pnlFooter.add(new JLabel("Signed in as " + role));
         btnLogout = new JButton("Log out");
         btnExit = new JButton("Exit");
         pnlFooter.add(btnLogout);
@@ -88,7 +100,9 @@ public class MainView extends JFrame {
         });
         btnPatients.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                pages.show(pnlPages, "patients");
+                if (isStaff) {
+                    pages.show(pnlPages, "patients");
+                }
             }
         });
         btnLogout.addActionListener(new ActionListener() {

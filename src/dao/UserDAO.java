@@ -5,9 +5,11 @@
 package DAO;
 
 import db.DBConnection;
+import Model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -15,10 +17,10 @@ import java.sql.ResultSet;
  */
 public class UserDAO {
 
-    public boolean authenticate(String username, String pass) {
+    public User authenticate(String username, String pass) throws SQLException {
 
         String sql =
-                "SELECT * FROM user WHERE username = ? AND pass = ?";
+                "SELECT id, username, name, user_type FROM user WHERE username = ? AND pass = ?";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
@@ -26,15 +28,18 @@ public class UserDAO {
             pst.setString(1, username);
             pst.setString(2, pass);
 
-            ResultSet rs = pst.executeQuery();
-
-            return rs.next();
-
-        } catch (Exception e) {
-
-            System.out.println("Database Error: " + e.getMessage());
-
-            return false;
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setName(rs.getString("name"));
+                    user.setUserType(rs.getString("user_type"));
+                    return user;
+                }
+            }
         }
+
+        return null;
     }
 }

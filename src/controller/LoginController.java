@@ -1,6 +1,8 @@
 package Controller;
 
 import DAO.UserDAO;
+import Model.User;
+import java.sql.SQLException;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -15,9 +17,18 @@ public class LoginController {
 
 
     private UserDAO userDAO;
+    private User authenticatedUser;
 
     public LoginController() {
-        userDAO = new UserDAO();
+        this(new UserDAO());
+    }
+
+    public LoginController(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public User getAuthenticatedUser() {
+        return authenticatedUser;
     }
 
     // Validation method
@@ -60,6 +71,7 @@ public class LoginController {
     // Login method
     public String login(String username, String password) {
 
+        authenticatedUser = null;
         String validationResult =
                 validateInput(username, password);
 
@@ -67,13 +79,42 @@ public class LoginController {
             return validationResult;
         }
 
-        boolean authenticated =
-                userDAO.authenticate(username, password);
+        return authenticateUser(username, password, null);
+    }
 
-        if (authenticated) {
-            return "LOGIN_SUCCESS";
+    public String login(String username, String password, String role) {
+
+        authenticatedUser = null;
+        String result = validateInput(username, password, role);
+
+        if (!result.equals("VALID")) {
+            return result;
         }
 
-        return "INVALID_CREDENTIALS";
+        return authenticateUser(username, password, role);
+    }
+
+    private String authenticateUser(String username, String password, String role) {
+        try {
+            User user = userDAO.authenticate(username, password);
+
+            if (user == null) {
+                return "INVALID_CREDENTIALS";
+            }
+
+            String userType = user.getUserType();
+            if (!"STAFF".equals(userType) && !"DENTIST".equals(userType)) {
+                return "ROLE_MISMATCH";
+            }
+
+            if (role != null && !role.equalsIgnoreCase(userType)) {
+                return "ROLE_MISMATCH";
+            }
+
+            authenticatedUser = user;
+            return "LOGIN_SUCCESS";
+        } catch (SQLException e) {
+            return "DATABASE_ERROR";
+        }
     }
 }

@@ -7,6 +7,7 @@
 package view;
 
 import Controller.LoginController;
+import Model.User;
 import javax.swing.JOptionPane;
 
 /**
@@ -125,30 +126,71 @@ public class LoginView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String username = txtUsername.getText();
-        String password = new String(txtPassword.getPassword());
-        String role = (String) cmbRole.getSelectedItem();
-        LoginController controller = new LoginController();
+        final String username = txtUsername.getText();
+        final String password = new String(txtPassword.getPassword());
+        final String role = (String) cmbRole.getSelectedItem();
+        final LoginController controller = new LoginController();
         String result = controller.validateInput(username, password, role);
 
         if (!result.equals("VALID")) {
+            lblMessage.setForeground(new java.awt.Color(160, 45, 45));
             lblMessage.setText(result);
             return;
         }
 
-        result = controller.login(username, password);
-        txtPassword.setText("");
+        jButton1.setEnabled(false);
+        txtUsername.setEnabled(false);
+        txtPassword.setEnabled(false);
+        cmbRole.setEnabled(false);
+        lblMessage.setForeground(new java.awt.Color(36, 115, 66));
+        lblMessage.setText("Signing in...");
 
-        if (result.equals("LOGIN_SUCCESS")) {
-            lblMessage.setText("Login successful!");
-            JOptionPane.showMessageDialog(this,
-                    "Welcome " + username + "\nRole verification is not connected yet.");
-            new MainView(username).setVisible(true);
-            dispose();
-        } else {
-            lblMessage.setText("Unable to log in. Check your details or connection.");
-        }
+        new javax.swing.SwingWorker<String, Void>() {
+            protected String doInBackground() {
+                return controller.login(username, password, role);
+            }
+
+            protected void done() {
+                jButton1.setEnabled(true);
+                txtUsername.setEnabled(true);
+                txtPassword.setEnabled(true);
+                cmbRole.setEnabled(true);
+                txtPassword.setText("");
+                try {
+                    showLoginResult(get(), controller.getAuthenticatedUser());
+                } catch (Exception e) {
+                    showLoginResult("LOGIN_ERROR", null);
+                }
+            }
+        }.execute();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void showLoginResult(String result, User user) {
+        if ("LOGIN_SUCCESS".equals(result)) {
+            String role = "STAFF".equals(user.getUserType()) ? "Staff" : "Dentist";
+            lblMessage.setForeground(new java.awt.Color(36, 115, 66));
+            lblMessage.setText("Login successful.");
+            JOptionPane.showMessageDialog(this,
+                    "Welcome, " + user.getName() + ".\nSigned in as " + role + ".",
+                    "Login successful", JOptionPane.INFORMATION_MESSAGE);
+            new MainView(user).setVisible(true);
+            dispose();
+            return;
+        }
+
+        lblMessage.setForeground(new java.awt.Color(160, 45, 45));
+        if ("INVALID_CREDENTIALS".equals(result)) {
+            lblMessage.setText("Incorrect username or password.");
+        } else if ("ROLE_MISMATCH".equals(result)) {
+            lblMessage.setText("Selected role does not match this account.");
+        } else if ("DATABASE_ERROR".equals(result)) {
+            lblMessage.setText("Database unavailable. Please try again.");
+        } else {
+            lblMessage.setText("Unable to sign in. Please try again.");
+        }
+        pack();
+        txtPassword.requestFocusInWindow();
+    }
 
     /**
      * @param args the command line arguments
