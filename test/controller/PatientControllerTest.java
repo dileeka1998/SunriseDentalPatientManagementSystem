@@ -22,13 +22,13 @@ public class PatientControllerTest {
 
     @Test
     public void testEmptyAddress() {
-        String result = controller.validateInput("Nimal Perera", "", "0771234567");
+        String result = controller.validateInput("Fathima Rizna", "", "0771234567");
         assertEquals("Address is required", result);
     }
 
     @Test
     public void testEmptyContactNumber() {
-        String result = controller.validateInput("Nimal Perera", "12 Main Road", null);
+        String result = controller.validateInput("Arul Sivarajah", "12 Main Road", null);
         assertEquals("Contact number is required", result);
     }
 
@@ -52,7 +52,7 @@ public class PatientControllerTest {
 
     @Test
     public void testNameWithApostrophe() {
-        String result = controller.validateInput("Anne O'Neil", "12 Main Road", "0112345678");
+        String result = controller.validateInput("Nadeesha D'Silva", "12 Main Road", "0112345678");
         assertEquals("VALID", result);
     }
 }

@@ -10,31 +10,31 @@ public class LoginValidationTest {
 
     @Test
     public void testStaffRole() {
-        String result = controller.validateInput("admin", "12345", "Staff");
+        String result = controller.validateInput("nimal.perera", "12345", "Staff");
         assertEquals("VALID", result);
     }
 
     @Test
     public void testDentistRole() {
-        String result = controller.validateInput("dentist", "12345", "Dentist");
+        String result = controller.validateInput("dilani.silva", "12345", "Dentist");
         assertEquals("VALID", result);
     }
 
     @Test
     public void testMissingRole() {
-        String result = controller.validateInput("admin", "12345", "Select role");
+        String result = controller.validateInput("nimal.perera", "12345", "Select role");
         assertEquals("Please select a role", result);
     }
 
     @Test
     public void testInvalidRole() {
-        String result = controller.validateInput("admin", "12345", "Manager");
+        String result = controller.validateInput("nimal.perera", "12345", "Manager");
         assertEquals("Please select a role", result);
     }
 
     @Test
     public void testNullRole() {
-        String result = controller.validateInput("admin", "12345", null);
+        String result = controller.validateInput("nimal.perera", "12345", null);
         assertEquals("Please select a role", result);
     }
 
@@ -46,7 +46,7 @@ public class LoginValidationTest {
 
     @Test
     public void testShortPassword() {
-        String result = controller.validateInput("admin", "123", "Staff");
+        String result = controller.validateInput("nimal.perera", "123", "Staff");
         assertEquals("Password must contain at least 5 characters", result);
     }
 }
