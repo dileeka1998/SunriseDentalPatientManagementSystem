@@ -24,11 +24,6 @@ public class LoginView extends javax.swing.JFrame {
         setTitle("Sunrise Dental - Login");
         setIconImage(new javax.swing.ImageIcon(
                 getClass().getResource("/assets/medical-cross.png")).getImage());
-        getContentPane().setBackground(java.awt.Color.WHITE);
-        lblTitle.setForeground(new java.awt.Color(36, 115, 66));
-        jButton1.setBackground(new java.awt.Color(36, 115, 66));
-        jButton1.setForeground(java.awt.Color.WHITE);
-        lblMessage.setForeground(new java.awt.Color(160, 45, 45));
         getRootPane().setDefaultButton(jButton1);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -43,6 +38,7 @@ public class LoginView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlLogin = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -55,6 +51,10 @@ public class LoginView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        pnlLogin.setBackground(new java.awt.Color(255, 255, 255));
+
+        jButton1.setBackground(new java.awt.Color(36, 115, 66));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Login");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -66,15 +66,17 @@ public class LoginView extends javax.swing.JFrame {
 
         jLabel2.setText("Password");
 
+        lblMessage.setForeground(new java.awt.Color(160, 45, 45));
         lblMessage.setText(" ");
         lblRole.setText("Role");
         cmbRole.setModel(new javax.swing.DefaultComboBoxModel<String>(
                 new String[] { "Select role", "Staff", "Dentist" }));
+        lblTitle.setForeground(new java.awt.Color(36, 115, 66));
         lblTitle.setText("Sunrise Dental");
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(pnlLogin);
+        pnlLogin.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -121,6 +123,8 @@ public class LoginView extends javax.swing.JFrame {
                 .addComponent(lblMessage)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
+
+        getContentPane().add(pnlLogin, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -237,5 +241,6 @@ public class LoginView extends javax.swing.JFrame {
     private javax.swing.JLabel lblRole;
     private javax.swing.JComboBox<String> cmbRole;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlLogin;
     // End of variables declaration//GEN-END:variables
 }

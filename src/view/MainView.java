@@ -1,131 +1,192 @@
 package view;
 
 import Model.User;
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class MainView extends JFrame {
 
-    private JPanel pnlPages;
-    private CardLayout pages;
-    private JButton btnToday;
-    private JButton btnPatients;
-    private JButton btnLogout;
-    private JButton btnExit;
+    private boolean isStaff;
 
     public MainView(User user) {
         if (user == null || (!"STAFF".equals(user.getUserType())
                 && !"DENTIST".equals(user.getUserType()))) {
             throw new IllegalArgumentException("An authorized user is required");
         }
-        initComponents(user);
+        initComponents();
+        isStaff = "STAFF".equals(user.getUserType());
+        String role = isStaff ? "Staff" : "Dentist";
+        lblUser.setText("Signed in: " + user.getUsername() + " (" + role + ")");
+        lblRole.setText("Signed in as " + role);
+        if (!isStaff) {
+            btnToday.setText("My appointments");
+            lblToday.setText("My appointments");
+            pnlNavigation.remove(btnPatients);
+            pnlPages.remove(pnlPatients);
+        }
+        scrollAppointments.getViewport().setBackground(Color.WHITE);
+        setLocationRelativeTo(null);
     }
 
-    private void initComponents(User user) {
-        final boolean isStaff = "STAFF".equals(user.getUserType());
-        String role = isStaff ? "Staff" : "Dentist";
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pnlHeader = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        pnlNavigation = new javax.swing.JPanel();
+        btnToday = new javax.swing.JButton();
+        btnPatients = new javax.swing.JButton();
+        pnlPages = new javax.swing.JPanel();
+        pnlToday = new javax.swing.JPanel();
+        lblToday = new javax.swing.JLabel();
+        scrollAppointments = new javax.swing.JScrollPane();
+        tblAppointments = new javax.swing.JTable();
+        lblAppointments = new javax.swing.JLabel();
+        pnlPatients = new view.PatientManagementView();
+        pnlFooter = new javax.swing.JPanel();
+        lblRole = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Sunrise Dental - Patient Management System");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setSize(900, 600);
         setMinimumSize(new java.awt.Dimension(760, 520));
-        setLocationRelativeTo(null);
+        setPreferredSize(new java.awt.Dimension(900, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
-        JPanel pnlHeader = new JPanel(new BorderLayout(15, 15));
-        pnlHeader.setBackground(Color.WHITE);
-        pnlHeader.setBorder(BorderFactory.createEmptyBorder(20, 24, 15, 24));
-        JLabel lblTitle = new JLabel("Sunrise Dental");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitle.setForeground(new Color(36, 115, 66));
-        pnlHeader.add(lblTitle, BorderLayout.WEST);
-        pnlHeader.add(new JLabel("Signed in: " + user.getUsername() + " (" + role + ")"),
-                BorderLayout.EAST);
+        pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
+        pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 24, 15, 24));
+        pnlHeader.setLayout(new java.awt.BorderLayout(15, 15));
 
-        JPanel pnlNavigation = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        pnlNavigation.setBackground(Color.WHITE);
-        btnToday = new JButton(isStaff ? "Today" : "My appointments");
-        btnPatients = new JButton("Patients");
+        lblTitle.setText("Sunrise Dental");
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(36, 115, 66));
+        pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
+
+        lblUser.setText("Signed in");
+        pnlHeader.add(lblUser, java.awt.BorderLayout.EAST);
+
+        pnlNavigation.setBackground(new java.awt.Color(255, 255, 255));
+        pnlNavigation.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
+
+        btnToday.setText("Today");
+        btnToday.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTodayActionPerformed(evt);
+            }
+        });
         pnlNavigation.add(btnToday);
-        if (isStaff) {
-            pnlNavigation.add(btnPatients);
-        }
-        pnlHeader.add(pnlNavigation, BorderLayout.SOUTH);
-        add(pnlHeader, BorderLayout.NORTH);
 
-        pages = new CardLayout();
-        pnlPages = new JPanel(pages);
-        JPanel pnlToday = new JPanel(new BorderLayout(10, 20));
-        pnlToday.setBackground(new Color(244, 248, 244));
-        pnlToday.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
-        JLabel lblToday = new JLabel(isStaff ? "Today's appointments" : "My appointments");
-        lblToday.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        pnlToday.add(lblToday, BorderLayout.NORTH);
-        JTable tblAppointments = new JTable(new DefaultTableModel(
-                new Object[][] {},
-                new String[] { "Number", "Time", "Patient", "Dentist", "Status" }) {
-            public boolean isCellEditable(int row, int column) {
-                return false;
+        btnPatients.setText("Patients");
+        btnPatients.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPatientsActionPerformed(evt);
+            }
+        });
+        pnlNavigation.add(btnPatients);
+
+        pnlHeader.add(pnlNavigation, java.awt.BorderLayout.SOUTH);
+
+        getContentPane().add(pnlHeader, java.awt.BorderLayout.NORTH);
+
+        pnlPages.setLayout(new java.awt.CardLayout());
+
+        pnlToday.setBackground(new java.awt.Color(244, 248, 244));
+        pnlToday.setBorder(javax.swing.BorderFactory.createEmptyBorder(24, 24, 24, 24));
+        pnlToday.setLayout(new java.awt.BorderLayout(10, 20));
+
+        lblToday.setText("Today's appointments");
+        lblToday.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        pnlToday.add(lblToday, java.awt.BorderLayout.NORTH);
+
+        tblAppointments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Number", "Time", "Patient", "Dentist", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         tblAppointments.setRowHeight(30);
-        JScrollPane scrollAppointments = new JScrollPane(tblAppointments);
-        scrollAppointments.getViewport().setBackground(Color.WHITE);
-        pnlToday.add(scrollAppointments, BorderLayout.CENTER);
-        pnlToday.add(new JLabel("Appointments are not connected yet."), BorderLayout.SOUTH);
+        scrollAppointments.setViewportView(tblAppointments);
+
+        pnlToday.add(scrollAppointments, java.awt.BorderLayout.CENTER);
+
+        lblAppointments.setText("Appointments are not connected yet.");
+        pnlToday.add(lblAppointments, java.awt.BorderLayout.SOUTH);
+
         pnlPages.add(pnlToday, "today");
-        if (isStaff) {
-            pnlPages.add(new PatientManagementView(this), "patients");
-        }
-        add(pnlPages, BorderLayout.CENTER);
+        pnlPages.add(pnlPatients, "patients");
 
-        JPanel pnlFooter = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        pnlFooter.setBackground(Color.WHITE);
-        pnlFooter.add(new JLabel("Signed in as " + role));
-        btnLogout = new JButton("Log out");
-        btnExit = new JButton("Exit");
+        getContentPane().add(pnlPages, java.awt.BorderLayout.CENTER);
+
+        pnlFooter.setBackground(new java.awt.Color(255, 255, 255));
+        pnlFooter.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 5, 5));
+
+        lblRole.setText("Signed in");
+        pnlFooter.add(lblRole);
+
+        btnLogout.setText("Log out");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
         pnlFooter.add(btnLogout);
-        pnlFooter.add(btnExit);
-        add(pnlFooter, BorderLayout.SOUTH);
 
-        btnToday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                pages.show(pnlPages, "today");
+        btnExit.setText("Exit");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
             }
         });
-        btnPatients.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                if (isStaff) {
-                    pages.show(pnlPages, "patients");
-                }
-            }
-        });
-        btnLogout.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                int answer = JOptionPane.showConfirmDialog(MainView.this,
-                        "Log out of Sunrise Dental?", "Log out", JOptionPane.YES_NO_OPTION);
-                if (answer == JOptionPane.YES_OPTION) {
-                    new LoginView().setVisible(true);
-                    dispose();
-                }
-            }
-        });
-        btnExit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                exitApplication();
-            }
-        });
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                exitApplication();
-            }
-        });
-    }
+        pnlFooter.add(btnExit);
+
+        getContentPane().add(pnlFooter, java.awt.BorderLayout.SOUTH);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnTodayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodayActionPerformed
+        ((CardLayout) pnlPages.getLayout()).show(pnlPages, "today");
+    }//GEN-LAST:event_btnTodayActionPerformed
+
+    private void btnPatientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatientsActionPerformed
+        if (isStaff) {
+            ((CardLayout) pnlPages.getLayout()).show(pnlPages, "patients");
+        }
+    }//GEN-LAST:event_btnPatientsActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        int answer = JOptionPane.showConfirmDialog(this,
+                "Log out of Sunrise Dental?", "Log out", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION) {
+            new LoginView().setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        exitApplication();
+    }//GEN-LAST:event_btnExitActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        exitApplication();
+    }//GEN-LAST:event_formWindowClosing
 
     private void exitApplication() {
         int answer = JOptionPane.showConfirmDialog(this,
@@ -134,4 +195,24 @@ public class MainView extends JFrame {
             dispose();
         }
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnPatients;
+    private javax.swing.JButton btnToday;
+    private javax.swing.JLabel lblAppointments;
+    private javax.swing.JLabel lblRole;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblToday;
+    private javax.swing.JLabel lblUser;
+    private javax.swing.JPanel pnlFooter;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlNavigation;
+    private javax.swing.JPanel pnlPages;
+    private view.PatientManagementView pnlPatients;
+    private javax.swing.JPanel pnlToday;
+    private javax.swing.JScrollPane scrollAppointments;
+    private javax.swing.JTable tblAppointments;
+    // End of variables declaration//GEN-END:variables
 }
