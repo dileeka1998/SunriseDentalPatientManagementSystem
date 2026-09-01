@@ -71,4 +71,8 @@ public class User {
     public void setUserType(String userType) {
         this.userType = userType;
     }
+
+    public String toString() {
+        return name == null ? username : name;
+    }
 }
