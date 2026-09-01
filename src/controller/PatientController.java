@@ -1,5 +1,10 @@
 package Controller;
 
+import DAO.PatientDAO;
+import Model.Patient;
+import java.sql.SQLException;
+import java.util.List;
+
 public class PatientController {
 
     public String validateInput(String name, String address, String contactNumber) {
@@ -21,5 +26,20 @@ public class PatientController {
         }
 
         return "VALID";
+    }
+
+    public int savePatient(String name, String address, String contactNumber) throws SQLException {
+        Patient patient = new Patient(0, name.trim(), address.trim(), contactNumber.trim());
+        return new PatientDAO().insert(patient);
+    }
+
+    public boolean updatePatient(int patientId, String name, String address,
+            String contactNumber) throws SQLException {
+        Patient patient = new Patient(patientId, name.trim(), address.trim(), contactNumber.trim());
+        return new PatientDAO().update(patient);
+    }
+
+    public List<Patient> searchPatients(String text) throws SQLException {
+        return new PatientDAO().search(text);
     }
 }

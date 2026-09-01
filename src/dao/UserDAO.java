@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -41,5 +43,23 @@ public class UserDAO {
         }
 
         return null;
+    }
+
+    public List<User> findDentists() throws SQLException {
+        List<User> dentists = new ArrayList<User>();
+        String sql = "SELECT id, username, name, user_type FROM user WHERE user_type = 'DENTIST' ORDER BY name";
+        try (Connection con = DBConnection.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                user.setName(rs.getString("name"));
+                user.setUserType(rs.getString("user_type"));
+                dentists.add(user);
+            }
+        }
+        return dentists;
     }
 }
