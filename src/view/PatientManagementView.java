@@ -1,7 +1,11 @@
 package view;
 
+import Controller.PatientController;
+import Model.Patient;
 import java.awt.Color;
+import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class PatientManagementView extends JPanel {
 
@@ -16,6 +20,27 @@ public class PatientManagementView extends JPanel {
         initComponents();
         tblPatients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         scrollPatients.getViewport().setBackground(Color.WHITE);
+        txtSearch.setEnabled(true);
+        btnSearch.setEnabled(true);
+        btnSearch.setToolTipText(null);
+        btnEdit.setEnabled(true);
+        btnEdit.setToolTipText(null);
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadPatients();
+            }
+        });
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadPatients();
+            }
+        });
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editPatient();
+            }
+        });
+        loadPatients();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -62,7 +87,6 @@ public class PatientManagementView extends JPanel {
 
         btnSearch.setText("Search");
         btnSearch.setEnabled(false);
-        btnSearch.setToolTipText("Patient storage is not connected yet.");
 
         pnlSearch.add(btnSearch);
 
@@ -87,7 +111,7 @@ public class PatientManagementView extends JPanel {
         pnlBottom.setOpaque(false);
         pnlBottom.setLayout(new java.awt.BorderLayout(10, 12));
 
-        lblMessage.setText("Patient storage is not connected. You can check the entry form.");
+        lblMessage.setText("Search or register a patient.");
 
         pnlBottom.add(lblMessage, java.awt.BorderLayout.NORTH);
 
@@ -96,7 +120,6 @@ public class PatientManagementView extends JPanel {
 
         btnEdit.setText("Edit patient");
         btnEdit.setEnabled(false);
-        btnEdit.setToolTipText("Patient storage is not connected yet.");
 
         pnlButtons.add(btnEdit);
 
@@ -122,8 +145,52 @@ public class PatientManagementView extends JPanel {
         if (owner == null && SwingUtilities.getWindowAncestor(this) instanceof JFrame) {
             owner = (JFrame) SwingUtilities.getWindowAncestor(this);
         }
-        new PatientRegistrationView(owner).setVisible(true);
+        final JFrame formOwner = owner;
+        new PatientRegistrationView(owner, null, new Runnable() {
+            public void run() {
+                loadPatients();
+            }
+        }).setVisible(true);
     }//GEN-LAST:event_btnRegisterActionPerformed
+
+    public void loadPatients() {
+        DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
+        model.setRowCount(0);
+        try {
+            List<Patient> patients = new PatientController().searchPatients(txtSearch.getText());
+            for (Patient patient : patients) {
+                model.addRow(new Object[]{patient.getPatientId(), patient.getName(),
+                    patient.getContactNumber(), patient.getAddress()});
+            }
+            lblMessage.setForeground(new Color(36, 115, 66));
+            lblMessage.setText(patients.size() + " patient record(s) found.");
+        } catch (Exception e) {
+            lblMessage.setForeground(new Color(160, 45, 45));
+            lblMessage.setText("Unable to load patients. Please check the database.");
+        }
+    }
+
+    private void editPatient() {
+        int row = tblPatients.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Select a patient to edit.",
+                    "Patient required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Patient patient = new Patient((Integer) tblPatients.getValueAt(row, 0),
+                String.valueOf(tblPatients.getValueAt(row, 1)),
+                String.valueOf(tblPatients.getValueAt(row, 3)),
+                String.valueOf(tblPatients.getValueAt(row, 2)));
+        JFrame owner = parent;
+        if (owner == null && SwingUtilities.getWindowAncestor(this) instanceof JFrame) {
+            owner = (JFrame) SwingUtilities.getWindowAncestor(this);
+        }
+        new PatientRegistrationView(owner, patient, new Runnable() {
+            public void run() {
+                loadPatients();
+            }
+        }).setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEdit;

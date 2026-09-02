@@ -144,7 +144,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="lblMessage">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Storage is not connected. Details will not be saved."/>
+        <Property name="text" type="java.lang.String" value="Enter the patient details."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnValidate">
@@ -164,9 +164,11 @@
     <Component class="javax.swing.JButton" name="btnSave">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save patient"/>
-        <Property name="toolTipText" type="java.lang.String" value="Patient storage is not connected yet."/>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="enabled" type="boolean" value="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnCancel">
       <Properties>
