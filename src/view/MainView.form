@@ -114,6 +114,10 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPatientsActionPerformed"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JButton" name="btnAppointments"><Properties><Property name="text" type="java.lang.String" value="Appointments"/></Properties><Events><EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAppointmentsActionPerformed"/></Events></Component>
+            <Component class="javax.swing.JButton" name="btnBilling"><Properties><Property name="text" type="java.lang.String" value="Billing"/></Properties><Events><EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBillingActionPerformed"/></Events></Component>
+            <Component class="javax.swing.JButton" name="btnReports"><Properties><Property name="text" type="java.lang.String" value="Reports"/></Properties><Events><EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReportsActionPerformed"/></Events></Component>
+            <Component class="javax.swing.JButton" name="btnHelp"><Properties><Property name="text" type="java.lang.String" value="Help"/></Properties><Events><EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHelpActionPerformed"/></Events></Component>
           </SubComponents>
         </Container>
       </SubComponents>
@@ -206,6 +210,10 @@
             </Constraint>
           </Constraints>
         </Component>
+        <Component class="view.AppointmentManagementView" name="pnlAllAppointments"><Constraints><Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription"><CardConstraints cardName="appointments"/></Constraint></Constraints></Component>
+        <Component class="view.BillingView" name="pnlBilling"><Constraints><Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription"><CardConstraints cardName="billing"/></Constraint></Constraints></Component>
+        <Component class="view.ReportsView" name="pnlReports"><Constraints><Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription"><CardConstraints cardName="reports"/></Constraint></Constraints></Component>
+        <Component class="view.HelpView" name="pnlHelp"><Constraints><Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription"><CardConstraints cardName="help"/></Constraint></Constraints></Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="pnlFooter">

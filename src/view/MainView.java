@@ -1,13 +1,18 @@
 package view;
 
 import Model.User;
+import Model.Appointment;
+import DAO.AppointmentDAO;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class MainView extends JFrame {
 
     private boolean isStaff;
+    private User signedInUser;
 
     public MainView(User user) {
         if (user == null || (!"STAFF".equals(user.getUserType())
@@ -15,6 +20,7 @@ public class MainView extends JFrame {
             throw new IllegalArgumentException("An authorized user is required");
         }
         initComponents();
+        signedInUser = user;
         isStaff = "STAFF".equals(user.getUserType());
         String role = isStaff ? "Staff" : "Dentist";
         lblUser.setText("Signed in: " + user.getUsername() + " (" + role + ")");
@@ -24,8 +30,15 @@ public class MainView extends JFrame {
             lblToday.setText("My appointments");
             pnlNavigation.remove(btnPatients);
             pnlPages.remove(pnlPatients);
+            pnlNavigation.remove(btnAppointments);
+            pnlNavigation.remove(btnBilling);
+            pnlNavigation.remove(btnReports);
+            pnlPages.remove(pnlAllAppointments);
+            pnlPages.remove(pnlBilling);
+            pnlPages.remove(pnlReports);
         }
         scrollAppointments.getViewport().setBackground(Color.WHITE);
+        loadTodayAppointments();
         setLocationRelativeTo(null);
     }
 
@@ -38,6 +51,10 @@ public class MainView extends JFrame {
         pnlNavigation = new javax.swing.JPanel();
         btnToday = new javax.swing.JButton();
         btnPatients = new javax.swing.JButton();
+        btnAppointments = new javax.swing.JButton();
+        btnBilling = new javax.swing.JButton();
+        btnReports = new javax.swing.JButton();
+        btnHelp = new javax.swing.JButton();
         pnlPages = new javax.swing.JPanel();
         pnlToday = new javax.swing.JPanel();
         lblToday = new javax.swing.JLabel();
@@ -45,6 +62,10 @@ public class MainView extends JFrame {
         tblAppointments = new javax.swing.JTable();
         lblAppointments = new javax.swing.JLabel();
         pnlPatients = new view.PatientManagementView();
+        pnlAllAppointments = new view.AppointmentManagementView();
+        pnlBilling = new view.BillingView();
+        pnlReports = new view.ReportsView();
+        pnlHelp = new view.HelpView();
         pnlFooter = new javax.swing.JPanel();
         lblRole = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
@@ -91,6 +112,38 @@ public class MainView extends JFrame {
         });
         pnlNavigation.add(btnPatients);
 
+        btnAppointments.setText("Appointments");
+        btnAppointments.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAppointmentsActionPerformed(evt);
+            }
+        });
+        pnlNavigation.add(btnAppointments);
+
+        btnBilling.setText("Billing");
+        btnBilling.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBillingActionPerformed(evt);
+            }
+        });
+        pnlNavigation.add(btnBilling);
+
+        btnReports.setText("Reports");
+        btnReports.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportsActionPerformed(evt);
+            }
+        });
+        pnlNavigation.add(btnReports);
+
+        btnHelp.setText("Help");
+        btnHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHelpActionPerformed(evt);
+            }
+        });
+        pnlNavigation.add(btnHelp);
+
         pnlHeader.add(pnlNavigation, java.awt.BorderLayout.SOUTH);
 
         getContentPane().add(pnlHeader, java.awt.BorderLayout.NORTH);
@@ -131,6 +184,10 @@ public class MainView extends JFrame {
 
         pnlPages.add(pnlToday, "today");
         pnlPages.add(pnlPatients, "patients");
+        pnlPages.add(pnlAllAppointments, "appointments");
+        pnlPages.add(pnlBilling, "billing");
+        pnlPages.add(pnlReports, "reports");
+        pnlPages.add(pnlHelp, "help");
 
         getContentPane().add(pnlPages, java.awt.BorderLayout.CENTER);
 
@@ -162,6 +219,7 @@ public class MainView extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTodayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodayActionPerformed
+        loadTodayAppointments();
         ((CardLayout) pnlPages.getLayout()).show(pnlPages, "today");
     }//GEN-LAST:event_btnTodayActionPerformed
 
@@ -170,6 +228,49 @@ public class MainView extends JFrame {
             ((CardLayout) pnlPages.getLayout()).show(pnlPages, "patients");
         }
     }//GEN-LAST:event_btnPatientsActionPerformed
+
+    private void btnAppointmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAppointmentsActionPerformed
+        if (isStaff) {
+            pnlAllAppointments.loadAppointments();
+            ((CardLayout) pnlPages.getLayout()).show(pnlPages, "appointments");
+        }
+    }//GEN-LAST:event_btnAppointmentsActionPerformed
+
+    private void btnBillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillingActionPerformed
+        if (isStaff) {
+            ((CardLayout) pnlPages.getLayout()).show(pnlPages, "billing");
+        }
+    }//GEN-LAST:event_btnBillingActionPerformed
+
+    private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
+        if (isStaff) {
+            ((CardLayout) pnlPages.getLayout()).show(pnlPages, "reports");
+        }
+    }//GEN-LAST:event_btnReportsActionPerformed
+
+    private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpActionPerformed
+        ((CardLayout) pnlPages.getLayout()).show(pnlPages, "help");
+    }//GEN-LAST:event_btnHelpActionPerformed
+
+    private void loadTodayAppointments() {
+        DefaultTableModel model = (DefaultTableModel) tblAppointments.getModel();
+        model.setRowCount(0);
+        try {
+            Integer dentistId = isStaff ? null : signedInUser.getId();
+            List<Appointment> rows = new AppointmentDAO().search("", dentistId, true);
+            for (Appointment appointment : rows) {
+                model.addRow(new Object[]{appointment.getAppointmentNo(),
+                    appointment.getAppointmentTime().toString().substring(0, 5),
+                    appointment.getPatient().getName(), appointment.getDentist().getName(),
+                    appointment.getStatus()});
+            }
+            lblAppointments.setForeground(new Color(36, 115, 66));
+            lblAppointments.setText(rows.size() + " appointment(s) scheduled for today.");
+        } catch (Exception e) {
+            lblAppointments.setForeground(new Color(160, 45, 45));
+            lblAppointments.setText("Unable to load today's appointments.");
+        }
+    }
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         int answer = JOptionPane.showConfirmDialog(this,
@@ -198,8 +299,12 @@ public class MainView extends JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnAppointments;
+    private javax.swing.JButton btnBilling;
+    private javax.swing.JButton btnHelp;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPatients;
+    private javax.swing.JButton btnReports;
     private javax.swing.JButton btnToday;
     private javax.swing.JLabel lblAppointments;
     private javax.swing.JLabel lblRole;
@@ -211,6 +316,10 @@ public class MainView extends JFrame {
     private javax.swing.JPanel pnlNavigation;
     private javax.swing.JPanel pnlPages;
     private view.PatientManagementView pnlPatients;
+    private view.AppointmentManagementView pnlAllAppointments;
+    private view.BillingView pnlBilling;
+    private view.HelpView pnlHelp;
+    private view.ReportsView pnlReports;
     private javax.swing.JPanel pnlToday;
     private javax.swing.JScrollPane scrollAppointments;
     private javax.swing.JTable tblAppointments;
