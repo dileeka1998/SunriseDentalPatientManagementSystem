@@ -119,7 +119,7 @@ public void testNonExistingUser() {
 public void testStudentLogin() {
 
     String result =
-            controller.login("student", "student123");
+            controller.login("Fuwad", "Fuwad12345");
 
     assertEquals(
             "LOGIN_SUCCESS",

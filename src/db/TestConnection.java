@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package db;
 
 import java.sql.Connection;
@@ -14,8 +13,8 @@ import java.sql.SQLException;
  * @author hnd
  */
 public class TestConnection {
-    
-     public static void main(String[] args) {
+
+    public static void main(String[] args) {
         try (Connection conn = DBConnection.getConnection()) {
 
             if (conn != null) {
@@ -24,8 +23,8 @@ public class TestConnection {
 
         } catch (SQLException e) {
             System.err.println("Failed to connect to the database.");
-            e.printStackTrace();
+            System.err.println("Failed to connect to the database: " + e.getMessage());
         }
     }
-    
+
 }

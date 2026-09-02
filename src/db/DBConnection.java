@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public class DBConnection {
      private static final String URL =
-            "jdbc:mysql://localhost:3306/sunrise_db";
+            "jdbc:mysql://localhost:3306/sunrise_db?useSSL=false";
 
     private static final String USER = "root";
 
